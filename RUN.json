@@ -1,0 +1,33 @@
+{
+  "runcontract": 1,
+  "services": [
+    {
+      "name": "api",
+      "dir": ".",
+      "stack": "python",
+      "kind": "server",
+      "install": [
+        ["${python}", "-m", "pip", "install", "-q", "-r", "requirements.txt"]
+      ],
+      "start": [
+        "${python}",
+        "-m",
+        "uvicorn",
+        "app.main:app",
+        "--host",
+        "0.0.0.0",
+        "--port",
+        "${PORT}"
+      ],
+      "port": 8000,
+      "port_env": "PORT",
+      "health": { "path": "/health", "expect_status": [200] },
+      "env": {
+        "LIBRARY_API_KEY": {
+          "external": true,
+          "degraded_without": "write endpoints answer 503 while no API key is configured"
+        }
+      }
+    }
+  ]
+}
